@@ -1,0 +1,17 @@
+Library/
+Temp/
+Logs/
+UserSettings/
+obj/
+Packages/
+ProjectSettings/
+.vs/
+.idea/
+.vscode/
+UIElementsSchema/
+CustomPackage/
+UserSettings/
+.vsconfig
+*.csproj
+*.sln
+
