@@ -316,12 +316,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 1688560810}
   child: {fileID: 0}
-  localFODBaseX: {x: 0, y: 0, z: 0}
-  localFODBaseY: {x: 0, y: 0, z: 0}
-  minFODYaw: 0
-  maxFODYaw: 0
-  minFODPitch: 0
-  maxFODPitch: 0
+  localDOFBaseX: {x: 0, y: 0, z: 0}
+  localDOFBaseY: {x: 0, y: 0, z: 0}
+  minDOFYaw: 0
+  maxDOFYaw: 0
+  minDOFPitch: 0
+  maxDOFPitch: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,12 +519,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 2049682075}
   child: {fileID: 1905500262}
-  localFODBaseX: {x: 1, y: 0, z: 0}
-  localFODBaseY: {x: 0, y: 0, z: -1}
-  minFODYaw: 90
-  maxFODYaw: 90
-  minFODPitch: 0
-  maxFODPitch: 170
+  localDOFBaseX: {x: 1, y: 0, z: 0}
+  localDOFBaseY: {x: 0, y: 0, z: -1}
+  minDOFYaw: 90
+  maxDOFYaw: 90
+  minDOFPitch: 0
+  maxDOFPitch: 170
 --- !u!1 &1889022000 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100082, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -544,12 +544,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
   child: {fileID: 2049682075}
-  localFODBaseX: {x: 0, y: 0, z: 0}
-  localFODBaseY: {x: 0, y: 0, z: 0}
-  minFODYaw: 0
-  maxFODYaw: 0
-  minFODPitch: 0
-  maxFODPitch: 0
+  localDOFBaseX: {x: 0, y: 0, z: 0}
+  localDOFBaseY: {x: 0, y: 0, z: 0}
+  minDOFYaw: 0
+  maxDOFYaw: 0
+  minDOFPitch: 0
+  maxDOFPitch: 0
 --- !u!1 &1905500260 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100076, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -569,12 +569,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 1688560810}
   child: {fileID: 0}
-  localFODBaseX: {x: 0, y: 0, z: 0}
-  localFODBaseY: {x: 0, y: 0, z: 0}
-  minFODYaw: 0
-  maxFODYaw: 0
-  minFODPitch: 0
-  maxFODPitch: 0
+  localDOFBaseX: {x: 0, y: 0, z: 0}
+  localDOFBaseY: {x: 0, y: 0, z: 0}
+  minDOFYaw: 0
+  maxDOFYaw: 0
+  minDOFPitch: 0
+  maxDOFPitch: 0
 --- !u!1 &2049682073 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100092, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -594,9 +594,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 1889022002}
   child: {fileID: 1688560810}
-  localFODBaseX: {x: 1, y: 0, z: 0}
-  localFODBaseY: {x: 0, y: -1, z: 0}
-  minFODYaw: 10
-  maxFODYaw: 170
-  minFODPitch: -80
-  maxFODPitch: 80
+  localDOFBaseX: {x: 1, y: 0, z: 0}
+  localDOFBaseY: {x: 0, y: -1, z: 0}
+  minDOFYaw: 10
+  maxDOFYaw: 170
+  minDOFPitch: -80
+  maxDOFPitch: 80
