@@ -6,13 +6,13 @@ public class Bone : MonoBehaviour
     public Bone parent;
     public Bone child;
 
-    public Vector3 localFODBaseX;
-    public Vector3 localFODBaseY;
+    public Vector3 localDOFBaseX;
+    public Vector3 localDOFBaseY;
 
-    public float minFODYaw;
-    public float maxFODYaw;
-    public float minFODPitch;
-    public float maxFODPitch;
+    public float minDOFYaw;
+    public float maxDOFYaw;
+    public float minDOFPitch;
+    public float maxDOFPitch;
 
 
     private Vector3 _localBaseX;
@@ -97,14 +97,14 @@ public class Bone : MonoBehaviour
     {
         if (parent)
         {
-            // 计算出世界空间下的FOD基向量
-            var worldFODBaseX      = parent._rotation * localFODBaseX;
-            var worldFODBaseY      = parent._rotation * localFODBaseY;
-            var worldFODBaseZ      = Vector3.Cross(worldFODBaseX, worldFODBaseY);
+            // 计算出世界空间下的DOF基向量
+            var worldDOFBaseX      = parent._rotation * localDOFBaseX;
+            var worldDOFBaseY      = parent._rotation * localDOFBaseY;
+            var worldDOFBaseZ      = Vector3.Cross(worldDOFBaseX, worldDOFBaseY);
 
-            //世界空间下的FOD旋转及其逆
-            var worldFODRotation   = Quaternion.LookRotation(worldFODBaseZ, worldFODBaseY);
-            var inverseFODRotation = Quaternion.Inverse(worldFODRotation);
+            //世界空间下的DOF旋转及其逆
+            var worldDOFRotation   = Quaternion.LookRotation(worldDOFBaseZ, worldDOFBaseY);
+            var inverseDOFRotation = Quaternion.Inverse(worldDOFRotation);
               
             var baseTarget         = worldTarget - _position;
             var baseTail           = tail - _position;
@@ -112,66 +112,66 @@ public class Bone : MonoBehaviour
             //世界空间下的子节点位置
             var basebone           = _rotation * child._localPosition;
 
-            // 将目标位置，末端点，和子节点位置变换到FOD Base
-            var targetInFODBase    = inverseFODRotation * baseTarget;
-            var tailInFODBase      = inverseFODRotation * baseTail;
-            var boneInFODBase      = inverseFODRotation * basebone;
+            // 将目标位置，末端点，和子节点位置变换到DOF Base
+            var targetInDOFBase    = inverseDOFRotation * baseTarget;
+            var tailInDOFBase      = inverseDOFRotation * baseTail;
+            var boneInDOFBase      = inverseDOFRotation * basebone;
 
             //理想情况下的水平旋转变换
-            var form = new Vector3(tailInFODBase.x, 0, tailInFODBase.z);
-            var to   = new Vector3(targetInFODBase.x, 0, targetInFODBase.z);
+            var form = new Vector3(tailInDOFBase.x, 0, tailInDOFBase.z);
+            var to   = new Vector3(targetInDOFBase.x, 0, targetInDOFBase.z);
             var rot1 = Quaternion.FromToRotation(form, to);
 
             //理想情况下的垂直旋转变换
-            var tempTail    = rot1 * tailInFODBase;
-            var rot2        = Quaternion.FromToRotation(tempTail, targetInFODBase);
+            var tempTail    = rot1 * tailInDOFBase;
+            var rot2        = Quaternion.FromToRotation(tempTail, targetInDOFBase);
 
             // 将变换作用到bone上，计算出理想情况下的bone位置
-            var perfectRot  = worldFODRotation * rot2 * rot1 * inverseFODRotation;
+            var perfectRot  = worldDOFRotation * rot2 * rot1 * inverseDOFRotation;
             var perfectBone = perfectRot * basebone;
 
-            // 变换到FOD Base下
-            var perfectBoneInFODBase = inverseFODRotation * perfectBone;
+            // 变换到DOF Base下
+            var perfectBoneInDOFBase = inverseDOFRotation * perfectBone;
 
-            var optimalDirInFODBase = Vector3.zero;
-            var optimalRot = Quaternion.identity;
+            var optimalDirInDOFBase = Vector3.zero;
+            var optimalRot          = Quaternion.identity;
 
-            // 将perfectBoneInFODBase分解到水平面
-            var perfectBoneInFODBaseZX = new Vector2(perfectBoneInFODBase.z, perfectBoneInFODBase.x);
-            if (perfectBoneInFODBaseZX != Vector2.zero)
+            // 将perfectBoneInDOFBase分解到水平面
+            var perfectBoneInDOFBaseZX = new Vector2(perfectBoneInDOFBase.z, perfectBoneInDOFBase.x);
+            if (perfectBoneInDOFBaseZX != Vector2.zero)
             {
                 // 计算出水平面约束条件下的最优向量
-                var zx   = ConstraintRotation2D(perfectBoneInFODBaseZX, minFODYaw, maxFODYaw);
+                var zx   = ConstraintRotation2D(perfectBoneInDOFBaseZX, minDOFYaw, maxDOFYaw);
 
                 // 以水平最优向量和Vector3.up向量确定一个Base
                 var az   = new Vector3(zx.y, 0, zx.x).normalized;
                 var ay   = Vector3.up;
                 var ax   = Vector3.Cross(ay, az);
 
-                //将perfectBoneInFODBase变换到Base内
-                var bone = MatrixInverseMul(ax, ay, az, perfectBoneInFODBase);
+                //将perfectBoneInDOFBase变换到Base内
+                var bone = MatrixInverseMul(ax, ay, az, perfectBoneInDOFBase);
                 var v2   = new Vector2(bone.z, bone.y);
 
                 // 计算垂直面约束条件下的
-                var zy   = ConstraintRotation2D(v2, minFODPitch, maxFODPitch);
+                var zy   = ConstraintRotation2D(v2, minDOFPitch, maxDOFPitch);
 
-                //在FOD Base下最优的方向
-                optimalDirInFODBase = MatrixMul(ax, ay, az, new Vector3(0, zy.y, zy.x));
+                //在DOF Base下最优的方向
+                optimalDirInDOFBase = MatrixMul(ax, ay, az, new Vector3(0, zy.y, zy.x));
 
                 // 水平方向上的最优旋转变换
-                var optimalRot1 = Quaternion.FromToRotation(new Vector3(boneInFODBase.x, 0, boneInFODBase.z), az);
+                var optimalRot1 = Quaternion.FromToRotation(new Vector3(boneInDOFBase.x, 0, boneInDOFBase.z), az);
                 // 相等表示水平方向没有自由度
-                if (minFODYaw == maxFODYaw)
+                if (minDOFYaw == maxDOFYaw)
                 {
                     optimalRot1 = Quaternion.identity;
                 }
 
                 // 垂直方向上的最优旋转变换
-                var tempBone = optimalRot1 * boneInFODBase;
-                var optimalRot2 = Quaternion.FromToRotation(tempBone, optimalDirInFODBase);
+                var tempBone    = optimalRot1 * boneInDOFBase;
+                var optimalRot2 = Quaternion.FromToRotation(tempBone, optimalDirInDOFBase);
 
                 // 相等表示垂直方向没有自由度
-                if (minFODPitch == maxFODPitch)
+                if (minDOFPitch == maxDOFPitch)
                 {
                     optimalRot1 = Quaternion.identity;
                 }
@@ -182,19 +182,19 @@ public class Bone : MonoBehaviour
             else
             {
                 //如果不能水平分解则只计算垂直旋转
-                var ax  = Vector3.Cross(Vector3.up, boneInFODBase).normalized;
+                var ax  = Vector3.Cross(Vector3.up, boneInDOFBase).normalized;
                 if (ax != Vector3.zero)
                 {
                     var az = Vector3.Cross(ax, Vector3.up).normalized;
-                    var zy = ConstraintRotation2D(Vector2.up, minFODYaw, maxFODYaw);
+                    var zy = ConstraintRotation2D(Vector2.up, minDOFYaw, maxDOFYaw);
 
-                    optimalDirInFODBase = MatrixMul(ax, Vector3.up, az, new Vector3(0, zy.y, zy.x));
-                    optimalRot          = Quaternion.FromToRotation(boneInFODBase, optimalDirInFODBase);
+                    optimalDirInDOFBase = MatrixMul(ax, Vector3.up, az, new Vector3(0, zy.y, zy.x));
+                    optimalRot          = Quaternion.FromToRotation(boneInDOFBase, optimalDirInDOFBase);
                 }
             }
 
-            // 先变换到FOD Base，然后作用最终的旋转变化，最后在变换到世界空间
-            optimalRot  = worldFODRotation * optimalRot * Quaternion.Inverse(worldFODRotation);
+            // 先变换到DOF Base，然后作用最终的旋转变化，最后在变换到世界空间
+            optimalRot  = worldDOFRotation * optimalRot * inverseDOFRotation;
 
             _worldBaseX = optimalRot * _worldBaseX;
             _worldBaseY = optimalRot * _worldBaseY;
@@ -224,7 +224,11 @@ public class Bone : MonoBehaviour
                            Vector3.Dot(z, p));
     }
 
-    public Vector2 ConstraintRotation2D(Vector2 to, float angleMin, float angleMax)
+    /// <param name="to">目标向量</param>
+    /// <param name="angleMin">角度区域开始[-180, 180]</param>
+    /// <param name="angleMax">角度区域结束[-180, 180]， 结束角度大于开始</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private Vector2 ConstraintRotation2D(Vector2 to, float angleMin, float angleMax)
     {
         var radMin  = angleMin * Mathf.Deg2Rad;
         var radMax  = angleMax * Mathf.Deg2Rad;
