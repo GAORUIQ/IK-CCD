@@ -218,7 +218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Root: {fileID: 1317235033}
   target: {fileID: 181439676}
-  autoDescent: 1
+  autoDescent: 0
 --- !u!135 &181439673
 SphereCollider:
   m_ObjectHideFlags: 0
