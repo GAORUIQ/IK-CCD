@@ -8,7 +8,7 @@ namespace Assets
         public Transform target;
         public bool autoDescent;
 
-        public void Test()
+        public void CCDTest()
         {
             var tail = Root.GetTail();
 
@@ -19,10 +19,29 @@ namespace Assets
             Root.ApplyTransform();
         }
 
+        public void FABRTest()
+        {
+            var tail = Root.GetTail();
+            Root.UpdateLocalTransform();
+            Root.UpdateWorldTransform(Root.transform.position);
+            tail.ForwardwardReaching(target.position, Quaternion.identity);
+            Root.ForwardwardReachingUpdate();
+            Root.BackwardReaching(Root.transform.position);
+            Root.ApplyTransform();
+        }
+
         private void Update()
         {
             if (autoDescent)
-                Test();
+                FABRTest();
+        }
+
+        private void OnGUI()
+        {
+            if (GUI.Button(new Rect(100, 100, 100, 100), "FABR"))
+            {
+                FABRTest();
+            }
         }
     }
 }
