@@ -13,6 +13,7 @@ public class Bone : MonoBehaviour
     public float maxDOFYaw;
     public float minDOFPitch;
     public float maxDOFPitch;
+    public float rollLimit;
 
 
     private Vector3 _localBaseX;
@@ -227,15 +228,6 @@ public class Bone : MonoBehaviour
                 _rotation = Quaternion.LookRotation(_worldBaseZ, _worldBaseY);
             }
         }
-        else
-        {
-            _worldBaseX = _cachedTransform.rotation * Vector3.right;
-            _worldBaseY = _cachedTransform.rotation * Vector3.up;
-            _worldBaseZ = _cachedTransform.rotation * Vector3.forward;
-
-            _position = transform.position;
-            _rotation = transform.rotation;
-        }
 
         if (child)
         {
@@ -289,23 +281,29 @@ public class Bone : MonoBehaviour
         }
     }
 
+    public Quaternion CalculateRollLimit(Quaternion inverseDOFRotation, Quaternion quaternion, Quaternion defaultLocal)
+    {
+        var quaternionInDOFBase = inverseDOFRotation * quaternion;
+        var defaultLocalInDOFBase = inverseDOFRotation * defaultLocal;
+
+        var axis1 = quaternionInDOFBase * Vector3.forward;
+        var axis2 = defaultLocalInDOFBase * Vector3.forward;
+
+        var toLimit = Quaternion.identity;
+        if (Vector3.Angle(axis1, axis2) > rollLimit)
+        {
+            toLimit = Quaternion.FromToRotation(axis1, axis2);
+        }
+
+        return Quaternion.Inverse(inverseDOFRotation) * toLimit * quaternionInDOFBase;
+    }
+
     public void BackwardReaching(Vector3 worldTarget)
     {
         //Debug.DrawRay(worldTarget, Vector3.up, Color.red, 10);
 
         if (parent)
         {
-            //if (parent.parent == null)
-            //{
-            //    _localBaseX = _defaultLocalRotation * Vector3.right;
-            //    _localBaseY = _defaultLocalRotation * Vector3.up;
-            //    _localBaseZ = _defaultLocalRotation * Vector3.forward;
-            //}
-
-            _worldBaseX = parent._rotation * _localBaseX;
-            _worldBaseY = parent._rotation * _localBaseY;
-            _worldBaseZ = parent._rotation * _localBaseZ;
-
             var worldDOFBaseX = parent._rotation * localDOFBaseX;
             var worldDOFBaseY = parent._rotation * localDOFBaseY;
             var worldDOFBaseZ = Vector3.Cross(worldDOFBaseX, worldDOFBaseY);
@@ -313,6 +311,23 @@ public class Bone : MonoBehaviour
             //世界空间下的DOF旋转及其逆
             var worldDOFRotation = Quaternion.LookRotation(worldDOFBaseZ, worldDOFBaseY);
             var inverseDOFRotation = Quaternion.Inverse(worldDOFRotation);
+
+
+            if (parent.parent == null)
+            {
+                _rotation = CalculateRollLimit(inverseDOFRotation, _rotation, parent._rotation * _defaultLocalRotation);
+
+                _worldBaseX = _rotation * Vector3.right;
+                _worldBaseY = _rotation * Vector3.up;
+                _worldBaseZ = _rotation * Vector3.forward;
+            }
+            else
+            {
+                _worldBaseX = parent._rotation * _localBaseX;
+                _worldBaseY = parent._rotation * _localBaseY;
+                _worldBaseZ = parent._rotation * _localBaseZ;
+            }
+
 
             if (child)
             {
@@ -323,13 +338,13 @@ public class Bone : MonoBehaviour
                 var perfectBoneInDOFBase = inverseDOFRotation * perfectBone;
                 var baseBoneInDOFBase = inverseDOFRotation * baseBone;
 
-                Debug.DrawRay(worldTarget, baseBone * 10, Color.green, 10);
-                Debug.DrawRay(worldTarget, perfectBone * 5, Color.blue, 10);
+                //Debug.DrawRay(worldTarget, baseBone * 10, Color.green, 10);
+                //Debug.DrawRay(worldTarget, perfectBone * 5, Color.blue, 10);
 
                 var optimalRot = CalculateOptimalRotationInDOFBase(baseBoneInDOFBase, perfectBoneInDOFBase);
                 optimalRot = worldDOFRotation * optimalRot * inverseDOFRotation;
 
-                Debug.DrawRay(worldTarget, optimalRot * baseBone * 10, Color.black, 10);
+                //Debug.DrawRay(worldTarget, optimalRot * baseBone * 10, Color.black, 10);
 
 
                 _position = worldTarget;
@@ -353,6 +368,19 @@ public class Bone : MonoBehaviour
         }
         else
         {
+            _rotation = _cachedTransform.rotation;
+            _localBaseX = _cachedTransform.localRotation * Vector3.right;
+            _localBaseY = _cachedTransform.localRotation * Vector3.up;
+            _localBaseZ = _cachedTransform.localRotation * Vector3.forward;
+
+            _worldBaseX = _rotation * Vector3.right;
+            _worldBaseY = _rotation * Vector3.up;
+            _worldBaseZ = _rotation * Vector3.forward;
+
+
+            //Debug.DrawRay(worldTarget, _worldBaseX, Color.red, 10);
+            //Debug.DrawRay(worldTarget, _worldBaseY, Color.green, 10);
+            //Debug.DrawRay(worldTarget, _worldBaseZ, Color.black, 10);
             _position = worldTarget;
             worldTarget = _rotation * child._localPosition + _position;
             child.BackwardReaching(worldTarget);
@@ -370,7 +398,7 @@ public class Bone : MonoBehaviour
 
         if (child)
         {
-            if (parent.parent)
+            if (parent)
             {
                 var worldDOFBaseX = parent._rotation * localDOFBaseX;
                 var worldDOFBaseY = parent._rotation * localDOFBaseY;
@@ -393,9 +421,9 @@ public class Bone : MonoBehaviour
                 var length = _localPosition.magnitude;
                 var perfectParentBone = (parent._position - worldTarget).normalized * length;
 
-                Debug.DrawRay(worldTarget, baseBone1, Color.yellow, 10);
-                Debug.DrawRay(worldTarget, parentBone1, Color.gray, 10);
-                Debug.DrawRay(worldTarget, perfectParentBone, Color.white, 10);
+                //Debug.DrawRay(worldTarget, baseBone1, Color.yellow, 10);
+                //Debug.DrawRay(worldTarget, parentBone1, Color.gray, 10);
+                //Debug.DrawRay(worldTarget, perfectParentBone, Color.white, 10);
 
                 var perfectParentBoneInDOFBase = inverseDOFRotation * perfectParentBone;
                 var baseBone1InDOFBase = inverseDOFRotation * baseBone1;
@@ -433,7 +461,7 @@ public class Bone : MonoBehaviour
         else
         {
             var from = lastPosition - parent._position;
-            var to = worldTarget - parent._position;
+            var to = worldTarget - parent._position;   
             var length = _localPosition.magnitude;
             worldTarget = worldTarget - to.normalized * length;
             optimalRot = Quaternion.FromToRotation(from, to);

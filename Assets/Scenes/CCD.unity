@@ -322,6 +322,7 @@ MonoBehaviour:
   maxDOFYaw: 180
   minDOFPitch: -80
   maxDOFPitch: 80
+  rollLimit: 60
 --- !u!1 &699754269 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100094, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -347,6 +348,7 @@ MonoBehaviour:
   maxDOFYaw: 0
   minDOFPitch: 0
   maxDOFPitch: 0
+  rollLimit: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,6 +552,7 @@ MonoBehaviour:
   maxDOFYaw: 0
   minDOFPitch: 0
   maxDOFPitch: 0
+  rollLimit: 0
 --- !u!1 &1317235032 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100034, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -575,6 +578,7 @@ MonoBehaviour:
   maxDOFYaw: 0
   minDOFPitch: 0
   maxDOFPitch: 0
+  rollLimit: 0
 --- !u!1 &1383815175 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100028, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -600,6 +604,7 @@ MonoBehaviour:
   maxDOFYaw: 0
   minDOFPitch: 0
   maxDOFPitch: 0
+  rollLimit: 0
 --- !u!1 &1688560808 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100054, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -625,6 +630,7 @@ MonoBehaviour:
   maxDOFYaw: 90
   minDOFPitch: 0
   maxDOFPitch: 170
+  rollLimit: 0
 --- !u!1 &1889022000 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100082, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -650,6 +656,7 @@ MonoBehaviour:
   maxDOFYaw: 0
   minDOFPitch: 0
   maxDOFPitch: 0
+  rollLimit: 0
 --- !u!1 &1905500260 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100076, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -675,6 +682,7 @@ MonoBehaviour:
   maxDOFYaw: 0
   minDOFPitch: 0
   maxDOFPitch: 0
+  rollLimit: 0
 --- !u!1 &2049682073 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100092, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -700,6 +708,7 @@ MonoBehaviour:
   maxDOFYaw: 170
   minDOFPitch: -80
   maxDOFPitch: 80
+  rollLimit: 0
 --- !u!1 &2115494746 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100006, guid: 320b1c2af77554f99a1658df4a6d3d5c, type: 3}
@@ -725,3 +734,4 @@ MonoBehaviour:
   maxDOFYaw: 90
   minDOFPitch: 0
   maxDOFPitch: 170
+  rollLimit: 0
